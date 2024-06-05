@@ -1,9 +1,18 @@
 import { createContext } from "react";
 import { Appearance } from "react-native";
-import { Theme } from "./types";
+import { IThemeProviderProps, Theme } from "./types";
 
 const ThemeContext = createContext({
     theme: Appearance.getColorScheme() as Theme,
-    setTheme: (theme: Theme) => {},
-    toggleTheme: () => {},
+    setTheme: (theme: Theme) => { },
+    toggleTheme: () => { },
 })
+
+
+export const ThemeProvider: React.FC<IThemeProviderProps> = ({children, storage_key }) => {
+    return (
+        <ThemeContext.Provider>
+            {children}
+        </ThemeContext.Provider>
+    )
+}
