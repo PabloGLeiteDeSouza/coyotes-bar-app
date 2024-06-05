@@ -6,8 +6,12 @@ import DocumentData from './assets/Icons/DocumentData';
 import LightBulbPerson from './assets/Icons/LightbulbPerson';
 import Rocket from './assets/Icons/Rocket';
 import Logo from './assets/Icons/Logo';
+import { ThemeProvider } from './providers/theme';
 export default function App() {
   return (
+    <ThemeProvider>
+      
+    </ThemeProvider>
     <GluestackUIProvider config={config}>
       <Home />
     </GluestackUIProvider>
