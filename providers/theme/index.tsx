@@ -28,7 +28,7 @@ export const ThemeProvider: React.FC<IThemeProviderProps> = ({children, storage_
     const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
     return (
-        <ThemeContext.Provider values={{theme, toggleTheme, setTheme}} >
+        <ThemeContext.Provider value={{theme, toggleTheme, setTheme}} >
             {children}
         </ThemeContext.Provider>
     )

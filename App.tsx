@@ -7,14 +7,12 @@ import LightBulbPerson from './assets/Icons/LightbulbPerson';
 import Rocket from './assets/Icons/Rocket';
 import Logo from './assets/Icons/Logo';
 import { ThemeProvider } from './providers/theme';
+import { Application } from './components/Application';
 export default function App() {
   return (
     <ThemeProvider>
-      
+      <Application />
     </ThemeProvider>
-    <GluestackUIProvider config={config}>
-      <Home />
-    </GluestackUIProvider>
   );
 }
 const Home = () => {

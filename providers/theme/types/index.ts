@@ -2,7 +2,7 @@ export type Theme = "light" | "dark"
 
 export interface IThemeProviderProps {
     children: React.ReactNode;
-    storage_key: string;
+    storage_key?: string;
 }
 
 export type ThemeObject = {
