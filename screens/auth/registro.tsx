@@ -1,6 +1,6 @@
 import { Box } from "@gluestack-ui/themed"
 
-export const registro: React.FC = () => {
+export const Registro: React.FC = () => {
     return (
         <Box>
             

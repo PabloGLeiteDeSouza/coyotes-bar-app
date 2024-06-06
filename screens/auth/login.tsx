@@ -60,9 +60,24 @@ import {
 } from "@gluestack-ui/themed";
 import { Formik } from "formik";
 import { GestureResponderEvent } from "react-native";
+import * as LocalAuthentication from "expo-local-authentication";
+
+
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
-export const login: React.FC = () => {
+export const Login: React.FC = ({navigation, route}) => {
   const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
+
+
+  const registrar_funcionario = async () => {
+    const auth = await LocalAuthentication.authenticateAsync({
+      promptMessage: "Autorize a criação de um novo funcionário",
+    });
+    if(auth.success){
+      navigation.navigate("registro", { authorized: true });
+    }
+  }
+
+
   return (
     <Box h="$full" w="$full" alignItems="center" >
         
@@ -154,16 +169,23 @@ export const login: React.FC = () => {
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
-              <Box
-                display="flex"
-                justifyContent="center"
-                alignItems="center"
-                w="$full"
-              >
-                <Button onPress={handleSubmit as FormSubmitReact}>
-                  <ButtonText>Login</ButtonText>
-                </Button>
+              <Box>
+                <Text 
+                  onPress={registrar_funcionario} 
+                  $dark-color="$blue300" 
+                  $light-color="$blue700" 
+                  my="$4.5" 
+
+                >
+                  Cadastrar novo funcioário
+                </Text>
               </Box>
+
+              <Button 
+                onPress={handleSubmit as FormSubmitReact}
+              >
+                <ButtonText>Login</ButtonText>
+              </Button>
             </>
           )}
         </Formik>

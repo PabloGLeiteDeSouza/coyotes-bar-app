@@ -19,7 +19,7 @@ export const Application: React.FC = () => {
             card: theme === "dark" ? config.tokens.colors.orange600 : config.tokens.colors.orange500,
             notification: theme === "dark" ? config.tokens.colors.orange300 : config.tokens.colors.orange200,
             primary: theme === "dark" ? config.tokens.colors.orange500 : config.tokens.colors.orange400,
-            text: theme === "dark" ? config.tokens.colors.textDark500: config.tokens.colors.textLight500,
+            text: theme === "dark" ? config.tokens.colors.textDark50: config.tokens.colors.textLight900,
         }
     } as Theme;
 

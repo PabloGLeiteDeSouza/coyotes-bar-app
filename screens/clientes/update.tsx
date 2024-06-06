@@ -1,4 +1,4 @@
-export const update: React.FC = () => {
+export const Update: React.FC = () => {
     return (
         <>
         </>
