@@ -61,40 +61,52 @@ import {
 import { Formik } from "formik";
 import { GestureResponderEvent } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
-
-
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../types";
+import { RouteProp } from "@react-navigation/native";
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
-export const Login: React.FC = ({navigation, route}) => {
-  const [isFormInvalid, setIsFormInvalid] = useState<boolean>(false);
 
+interface ILoginProps {
+  navigation: NativeStackNavigationProp<RootStackParamList, "login">;
+  route: RouteProp<RootStackParamList, "login">;
+}
+
+
+
+export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
   const registrar_funcionario = async () => {
     const auth = await LocalAuthentication.authenticateAsync({
       promptMessage: "Autorize a criação de um novo funcionário",
     });
-    if(auth.success){
-      navigation.navigate("registro", { authorized: true });
+    if (auth.success) {
+      navigation.navigate("registro", {
+        authorized: true,
+      });
     }
-  }
-
-
+  };
   return (
-    <Box h="$full" w="$full" alignItems="center" >
-        
-        <Text 
-            my="$5"
-            textAlign="center"
-            size="2xl"
-        >Faça seu login abaixo</Text>
+    <Box h="$full" w="$full" alignItems="center">
+      <Text my="$5" textAlign="center" size="2xl">
+        Faça seu login abaixo
+      </Text>
       <Box>
         <Formik
           initialValues={{
             login: "",
             password: "",
           }}
-          onSubmit={(values, actions) => {
-            if (!"deu ruim") {
-              setIsFormInvalid(true);
+          onSubmit={async (values, actions) => {
+            try {
+              const result = await fetch("http://localhost:3000/teste", {
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                method: "POST",
+                body: JSON.stringify({ login: values.login, senha: values.password }),
+              })
+            }catch(e){
+
             }
           }}
         >
@@ -106,84 +118,85 @@ export const Login: React.FC = ({navigation, route}) => {
             handleReset,
           }) => (
             <>
-              <FormControl
-                isInvalid={false}
-                size={"md"}
-                isDisabled={false}
-                isRequired={true}
+              <Box
+                gap="$5"
               >
-                <FormControlLabel>
-                  <FormControlLabelText>Login</FormControlLabelText>
-                </FormControlLabel>
-                <Input>
-                  <InputField
-                    type="text"
-                    placeholder="Login"
-                    onChangeText={handleChange("login")}
-                    value={values.login}
-                    keyboardType="email-address"
-                  />
-                </Input>
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Login</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="text"
+                      placeholder="Login"
+                      onChangeText={handleChange("login")}
+                      value={values.login}
+                      keyboardType="email-address"
+                    />
+                  </Input>
 
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Informe seu usuário ou email para acessar o app.
-                  </FormControlHelperText>
-                </FormControlHelper>
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Informe seu usuário ou email para acessar o app.
+                    </FormControlHelperText>
+                  </FormControlHelper>
 
-                <FormControlError>
-                  <FormControlErrorIcon as={AlertCircleIcon} />
-                  <FormControlErrorText>
-                    Usuário ou email não encontrados.
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormControl>
-              <FormControl
-                isInvalid={false}
-                size={"md"}
-                isDisabled={false}
-                isRequired={true}
-              >
-                <FormControlLabel>
-                  <FormControlLabelText>Password</FormControlLabelText>
-                </FormControlLabel>
-                <Input>
-                  <InputField
-                    type="password"
-                    value={values.password}
-                    onChangeText={handleChange("password")}
-                    placeholder="password"
-                  />
-                </Input>
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Usuário ou email não encontrados.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Password</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="password"
+                      value={values.password}
+                      onChangeText={handleChange("password")}
+                      placeholder="password"
+                    />
+                  </Input>
 
-                <FormControlHelper>
-                  <FormControlHelperText>
-                    Must be atleast 6 characters.
-                  </FormControlHelperText>
-                </FormControlHelper>
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Must be atleast 6 characters.
+                    </FormControlHelperText>
+                  </FormControlHelper>
 
-                <FormControlError>
-                  <FormControlErrorIcon as={AlertCircleIcon} />
-                  <FormControlErrorText>
-                    Atleast 6 characters are required.
-                  </FormControlErrorText>
-                </FormControlError>
-              </FormControl>
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Atleast 6 characters are required.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+              </Box>
               <Box>
-                <Text 
-                  onPress={registrar_funcionario} 
-                  $dark-color="$blue300" 
-                  $light-color="$blue700" 
-                  my="$4.5" 
-
+                <Text
+                  onPress={registrar_funcionario}
+                  $dark-color="$blue300"
+                  $light-color="$blue700"
+                  my="$3.5"
                 >
                   Cadastrar novo funcioário
                 </Text>
               </Box>
 
-              <Button 
-                onPress={handleSubmit as FormSubmitReact}
-              >
+              <Button onPress={handleSubmit as FormSubmitReact}>
                 <ButtonText>Login</ButtonText>
               </Button>
             </>
