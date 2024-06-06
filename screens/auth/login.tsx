@@ -59,7 +59,7 @@ import {
   ChevronDownIcon,
 } from "@gluestack-ui/themed";
 import { Formik } from "formik";
-import { GestureResponderEvent } from "react-native";
+import { Alert, GestureResponderEvent } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
@@ -74,6 +74,31 @@ interface ILoginProps {
 
 
 export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
+
+  const getPokemonData = (login: string, senha: string) => {
+    const endpoint = `http://10.0.0.136:3000/teste`;
+
+    fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ login, senha })
+    })
+      .then(resposta => resposta.json())
+        .then( json => {
+          const pokemon = {
+            nome: json.name,
+            img: json.sprites.other["official-artwork"].front_default,
+            peso: json.weight,
+          };
+          console.log(pokemon);
+        })
+        .catch(() => {
+          Alert.alert('Erro', 'Não foi possível carregar os dados do Pokémon');
+        });
+  }
+
 
   const registrar_funcionario = async () => {
     const auth = await LocalAuthentication.authenticateAsync({
@@ -96,18 +121,16 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
             login: "",
             password: "",
           }}
-          onSubmit={async (values, actions) => {
-            try {
-              const result = await fetch("http://localhost:3000/teste", {
-                headers: {
-                  "Content-Type": "application/json",
-                },
-                method: "POST",
-                body: JSON.stringify({ login: values.login, senha: values.password }),
-              })
-            }catch(e){
-
-            }
+          onSubmit={ async (values, actions) => {
+            const result = await fetch('http://10.0.0.136:3000/teste', {
+              method: 'POST',
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({ login: values.login, senha: values.password })
+            });
+            const retorno = result.json();
+            console.log(retorno);
           }}
         >
           {({
