@@ -22,7 +22,7 @@ export const AppScreens: React.FC = () => {
 
 export const AuthScreens: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName="login" >
+        <Stack.Navigator initialRouteName="registro" >
             <Stack.Screen name="login" options={{ title: "Login" }} component={Login}  />
             <Stack.Screen name="registro" options={{ title: "Registro" }} component={Registro} />
         </Stack.Navigator>
