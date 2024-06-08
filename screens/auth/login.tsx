@@ -75,11 +75,11 @@ interface ILoginProps {
 
 export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
-  const api
+  const api = process.env.EXPO_PUBLIC_API_URL;
 
 
   const getPokemonData = (login: string, senha: string) => {
-    const endpoint = `http://10.0.0.136:3000/teste`;
+    const endpoint = `${api}/teste`;
 
     fetch(endpoint, {
       method: 'POST',

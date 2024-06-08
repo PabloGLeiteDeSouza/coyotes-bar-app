@@ -63,19 +63,58 @@ import {
 } from "@gluestack-ui/themed";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { Formik } from "formik";
-
 type validates = {
-  nome: { isInvalid: boolean, isDisable: boolean },
-  
-}
-
+  nome?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  data_de_nascimento?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  cpf?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  cep?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  logradouro?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  numero?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  bairro?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  cidade?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  uf?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  username?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  email?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+  senha?: {
+    isInvalid: boolean;
+    isDisable: boolean;
+  };
+};
 export const Registro: React.FC = () => {
-
-  const [validates, setValidates] = useState<>({})
-
-
-
-
+  const [validates, setValidates] = useState<validates | null>({});
   return (
     <ScrollView w="$full" h="$full">
       <Box w="$full" display="flex" alignItems="center" mb="$8">
@@ -171,13 +210,13 @@ export const Registro: React.FC = () => {
                       }/${values.data_de_nascimento.getFullYear()}`}
                     />
                     <Button
-                      onPress={() => { 
-                        DateTimePickerAndroid.open({ 
+                      onPress={() => {
+                        DateTimePickerAndroid.open({
                           value: values.data_de_nascimento,
                           onChange: (e, date) => {
                             setFieldValue("data_de_nascimento", date);
-                          }
-                        }) 
+                          },
+                        });
                       }}
                     >
                       <ButtonIcon as={CalendarDaysIcon} />
@@ -186,14 +225,15 @@ export const Registro: React.FC = () => {
 
                   <FormControlHelper>
                     <FormControlHelperText>
-                      Must be atleast 6 characters.
+                      Insira sua data de nascimento.
                     </FormControlHelperText>
                   </FormControlHelper>
 
                   <FormControlError>
                     <FormControlErrorIcon as={AlertCircleIcon} />
                     <FormControlErrorText>
-                      Atleast 6 characters are required.
+                      A data de nascimento é inválida pois o funcionário deve
+                      ter pelo menos 16 anos.
                     </FormControlErrorText>
                   </FormControlError>
                 </FormControl>
@@ -206,7 +246,7 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Cpf</FormControlLabelText>
                   </FormControlLabel>
                   <Input>
                     <InputField
@@ -238,7 +278,7 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Cep</FormControlLabelText>
                   </FormControlLabel>
                   <Input>
                     <InputField
@@ -270,7 +310,7 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Logradouro</FormControlLabelText>
                   </FormControlLabel>
                   <Input>
                     <InputField
@@ -302,7 +342,7 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Bairro</FormControlLabelText>
                   </FormControlLabel>
                   <Input>
                     <InputField
@@ -334,7 +374,7 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Cidade</FormControlLabelText>
                   </FormControlLabel>
                   <Input>
                     <InputField
@@ -365,13 +405,10 @@ export const Registro: React.FC = () => {
                   isRequired={true}
                 >
                   <FormControlLabel>
-                    <FormControlLabelText>Password</FormControlLabelText>
+                    <FormControlLabelText>Uf</FormControlLabelText>
                   </FormControlLabel>
 
-                  <Select
-                    isInvalid={false}
-                    isDisabled={false}
-                  >
+                  <Select isInvalid={false} isDisabled={false}>
                     <SelectTrigger size={"lg"} variant={"outline"}>
                       <SelectInput placeholder="Select option" />
                       <SelectIcon mr={"$3"} ml={0} as={ChevronDownIcon} />
@@ -415,6 +452,171 @@ export const Registro: React.FC = () => {
                     </FormControlErrorText>
                   </FormControlError>
                 </FormControl>
+
+                {/* username */}
+
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Password</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="password"
+                      defaultValue="12345"
+                      placeholder="password"
+                    />
+                  </Input>
+
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Must be atleast 6 characters.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Atleast 6 characters are required.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+
+                {/* Email */}
+
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Email</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="text"
+                      placeholder="email@email.com"
+                    />
+                  </Input>
+
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      Informe seu email.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Email inválido.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+
+                {/* Confirme Email */}
+
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Confirme email</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="text"
+                      
+                      placeholder="email@email.com"
+                    />
+                  </Input>
+
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      A confirmação de email deve ser igual ao email.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Emails divergentes.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+
+                {/* Senha */}
+
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Senha</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="password"
+                      defaultValue="12345"
+                      placeholder="password"
+                    />
+                  </Input>
+
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      A senha deve ter letras maiusculas e minusculas caracteres epsciais e números.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Senha muito fraca.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+
+                {/* Confirma Senha */}
+
+                <FormControl
+                  isInvalid={false}
+                  size={"md"}
+                  isDisabled={false}
+                  isRequired={true}
+                >
+                  <FormControlLabel>
+                    <FormControlLabelText>Confirme a senha</FormControlLabelText>
+                  </FormControlLabel>
+                  <Input>
+                    <InputField
+                      type="password"
+                      defaultValue="12345"
+                      placeholder="password"
+                    />
+                  </Input>
+
+                  <FormControlHelper>
+                    <FormControlHelperText>
+                      A confirmação deve ser igual a senha.
+                    </FormControlHelperText>
+                  </FormControlHelper>
+
+                  <FormControlError>
+                    <FormControlErrorIcon as={AlertCircleIcon} />
+                    <FormControlErrorText>
+                      Senhas divergentes.
+                    </FormControlErrorText>
+                  </FormControlError>
+                </FormControl>
+
                 <Button onPress={handleSubmit}>
                   <ButtonText>Cadastrar</ButtonText>
                 </Button>
