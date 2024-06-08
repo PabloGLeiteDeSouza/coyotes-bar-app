@@ -13,7 +13,7 @@ const Tab = createBottomTabNavigator();
 export const AppScreens: React.FC = () => {
     return (
         <Tab.Navigator initialRouteName="vendas-screens" >
-            <Tab.Screen name="vendas-screens" component={vendas_screens} />''
+            <Tab.Screen name="vendas-screens" component={vendas_screens} />
             <Tab.Screen name="bebidas-screens" component={produtos_screens} />
             <Tab.Screen name="clientes-screens" component={clientes_screens} />
         </Tab.Navigator>
@@ -22,7 +22,7 @@ export const AppScreens: React.FC = () => {
 
 export const AuthScreens: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName="login" >
+        <Stack.Navigator initialRouteName="registro" >
             <Stack.Screen name="login" options={{ title: "Login" }} component={Login}  />
             <Stack.Screen name="registro" options={{ title: "Registro" }} component={Registro} />
         </Stack.Navigator>

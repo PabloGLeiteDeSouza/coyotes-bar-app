@@ -75,6 +75,9 @@ interface ILoginProps {
 
 export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
+  const api
+
+
   const getPokemonData = (login: string, senha: string) => {
     const endpoint = `http://10.0.0.136:3000/teste`;
 
@@ -122,15 +125,17 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
             password: "",
           }}
           onSubmit={ async (values, actions) => {
-            const result = await fetch('http://10.0.0.136:3000/teste', {
+            fetch('http://10.0.0.136:3000/teste', {
               method: 'POST',
               headers: {
                 "Content-Type": "application/json",
               },
               body: JSON.stringify({ login: values.login, senha: values.password })
-            });
-            const retorno = result.json();
-            console.log(retorno);
+            }).then((res) => {
+              if (res.ok) {
+                console.log(res.json());
+              }
+            })
           }}
         >
           {({
