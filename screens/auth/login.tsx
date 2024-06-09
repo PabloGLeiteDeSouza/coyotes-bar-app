@@ -75,11 +75,11 @@ interface ILoginProps {
 
 export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
-  const api = process.env.EXPO_PUBLIC_API_URL;
+  const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
-
+  
   const getPokemonData = (login: string, senha: string) => {
-    const endpoint = `${api}/teste`;
+    const endpoint = api_url + 'teste';
 
     fetch(endpoint, {
       method: 'POST',
@@ -125,7 +125,7 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
             password: "",
           }}
           onSubmit={ async (values, actions) => {
-            fetch('http://10.0.0.136:3000/teste', {
+            fetch(api_url + 'teste', {
               method: 'POST',
               headers: {
                 "Content-Type": "application/json",
@@ -233,4 +233,4 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
       </Box>
     </Box>
   );
-};
+}
