@@ -1,11 +1,11 @@
 import { createNativeStackNavigator } from "@react-navigation/native-stack"
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs"
-import { Login } from "./auth/Login";
+import { Login } from "./auth/login";
 import React from "react";
 import { vendas_screens } from "./vendas";
 import { produtos_screens } from "./produtos";
 import { clientes_screens } from "./clientes";
-import { Registro } from "./auth/Registro";
+import { Registro } from "./auth/registro";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -22,7 +22,7 @@ export const AppScreens: React.FC = () => {
 
 export const AuthScreens: React.FC = () => {
     return (
-        <Stack.Navigator initialRouteName="registro" >
+        <Stack.Navigator initialRouteName="login" >
             <Stack.Screen name="login" options={{ title: "Login" }} component={Login}  />
             <Stack.Screen name="registro" options={{ title: "Registro" }} component={Registro} />
         </Stack.Navigator>

@@ -64,6 +64,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
+
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
 interface ILoginProps {
@@ -78,7 +79,7 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
   
-  const getPokemonData = (login: string, senha: string) => {
+  /* const getPokemonData = (login: string, senha: string) => {
     const endpoint = api_url + 'teste';
 
     fetch(endpoint, {
@@ -100,7 +101,7 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
         .catch(() => {
           Alert.alert('Erro', 'Não foi possível carregar os dados do Pokémon');
         });
-  }
+  } */
 
 
   const registrar_funcionario = async () => {
@@ -124,18 +125,29 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
             login: "",
             password: "",
           }}
-          onSubmit={ async (values, actions) => {
-            fetch(api_url + 'teste', {
-              method: 'POST',
-              headers: {
-                "Content-Type": "application/json",
-              },
-              body: JSON.stringify({ login: values.login, senha: values.password })
-            }).then((res) => {
-              if (res.ok) {
-                console.log(res.json());
+          onSubmit={async (values, actions) => {
+            try {
+              const response = await fetch(`${api_url}auth/login`, { // substitua com a URL correta
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ login: values.login, senha: values.password })
+              });
+
+              if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
               }
-            })
+
+              const data = await response.json();
+
+              // O token JWT deve estar no campo 'access_token' da resposta
+              const jwt = data.access_token;
+
+              console.log(jwt);
+            } catch (error) {
+              console.error('There has been a problem with your fetch operation: ', error);
+            }
           }}
         >
           {({
