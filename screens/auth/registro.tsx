@@ -59,20 +59,58 @@ import {
   ButtonIcon,
   CalendarDaysIcon,
   ScrollView,
+  EyeIcon,
+  EyeOffIcon,
 } from "@gluestack-ui/themed";
 import { Box } from "@gluestack-ui/themed";
 import { Formik } from "formik";
 import { Alert, GestureResponderEvent } from "react-native";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
-import { ResultsSearchCeps, validateObjectsRegisterForm } from "../../types";
+import { ResultsSearchCeps, RootStackParamList, validateObjectsRegisterForm } from "../../types";
 import * as SplashScreen from "expo-splash-screen";
-import { validatePathConfig } from "@react-navigation/native";
+import { RouteProp, validatePathConfig } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
+type Dados = {
+  [key: string]: {
+    isInvalid: boolean,
+    isDisabled: boolean,
+  }
+}
 
-SplashScreen.preventAutoHideAsync();
+interface IRegistroProps {
+  navigation: NativeStackNavigationProp<RootStackParamList, "registro">;
+  route: RouteProp<RootStackParamList, "registro">;
+}
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
-export const Registro: React.FC = () => {
+export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
+
+  const [senhasVisibility, setSenhasVisibility] = useState<{ senhaIsVisible: boolean, confirma_senhaIsVisible: boolean }>({ senhaIsVisible: false, confirma_senhaIsVisible: false })
+
+  function verificarInvalidos(dados: Dados): boolean {
+    for (let prop in dados) {
+      if (dados[prop].isInvalid) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  function validarSenha(senha: string): boolean {
+    const temOitoCaracteres = /.{8,}/;
+    const temMaiuscula = /[A-Z]/;
+    const temMinuscula = /[a-z]/;
+    const temNumero = /[0-9]/;
+    const temCaractereEspecial = /[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]+/;
+
+    return temOitoCaracteres.test(senha) && 
+           temMaiuscula.test(senha) && 
+           temMinuscula.test(senha) && 
+           temNumero.test(senha) && 
+           temCaractereEspecial.test(senha);
+}
+
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
   const cpfInputRef = useRef(null);
@@ -231,7 +269,87 @@ export const Registro: React.FC = () => {
             senha: "",
             confirma_senha: ""
           }}
-          onSubmit={() => {}}
+          onSubmit={async (values) => {
+            try{
+
+              const { bairro, cep, cidade, complemento, cpf, data_de_nascimento, logradouro, email, nome_completo, numero, uf, senha, username } = values;
+              if(!verificarInvalidos(validates)){
+                return Alert.alert("Erro", "Um dos campos ainda é inválido");
+              }
+  
+              const data_pessoa = await fetch(`${api_url}pessoa`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ nome: nome_completo })
+              })
+
+              if (!data_pessoa.ok) {
+                return Alert.alert("Erro", "Não foi possivel criar o usuário");
+              }
+
+              const pessoa = await data_pessoa.json();
+              
+              const data_endereco = await fetch(`${api_url}endereco`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                  rua: logradouro,
+                  numero: Number(numero),
+                  bairro: bairro, 
+                  cidade: cidade, 
+                  UF: uf, 
+                  cep: cep, 
+                  pessoa_id: pessoa.id 
+                })
+              })
+
+              if (!data_endereco.ok) {
+                return Alert.alert("Erro", "Não foi possivel criar o usuário");
+              }
+  
+              const data_pessoa_fisica = await fetch(`${api_url}pessoa-fisica`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ 
+                  cpf,
+                  data_de_nascimento,
+                  id_pessoa: pessoa.id 
+                }),
+              });
+
+              
+              if (!data_pessoa_fisica.ok) {
+                return Alert.alert("Erro", "Não foi possivel criar o usuário");
+              }
+  
+              const data_user = await fetch(`${api_url}user`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: values.username, email: values.email, password: values.senha, id_pessoa: pessoa.id}),
+              });
+              
+              if (!data_user.ok) {
+                return Alert.alert("Erro", "Não foi possivel criar o usuário");
+              }
+
+              const user = await data_user.json();
+  
+              if(user){
+                Alert.alert("Sucesso", "Cadastro realizado com sucesso");
+                navigation.navigate('login', {});
+              }
+            } catch(e) {
+              Alert.alert("Erro", "erro ao realizar o registro");
+            }
+          }}
           validate={(values) => {}}
         >
           {({
@@ -245,16 +363,38 @@ export const Registro: React.FC = () => {
             <Box w="$72" gap="$8">
               {/* Nome Completo */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.nome_completo.isInvalid}
                 isDisabled={false}
-                isRequired={true}
+                isRequired={validates.nome_completo.isDisabled}
                 size={"md"}
               >
                 <FormControlLabel>
                   <FormControlLabelText>Nome Completo</FormControlLabelText>
                 </FormControlLabel>
                 <Input>
-                  <InputField type="text" placeholder="Nome completo" />
+                  <InputField 
+                    type="text" 
+                    placeholder="Nome completo" 
+                    onChangeText={handleChange('nome_completo')}
+                    onBlur={() => {
+                      if(!values.nome_completo){
+                        return setValidates({
+                          ...validates,
+                          nome_completo: {
+                            isInvalid: true,
+                            isDisabled: false,
+                          },
+                        })
+                      }
+                      return setValidates({
+                        ...validates,
+                        nome_completo: {
+                          isInvalid: false,
+                          isDisabled: false,
+                        },
+                      })
+                    }}
+                  />
                 </Input>
 
                 <FormControlHelper>
@@ -332,6 +472,7 @@ export const Registro: React.FC = () => {
                 </FormControlLabel>
                 <Input>
                   <InputField
+                    keyboardType="number-pad"
                     ref={cpfInputRef}
                     type="text"
                     value={values.cpf}
@@ -419,7 +560,6 @@ export const Registro: React.FC = () => {
                           },
                         })
                         const cep_validate = cep_format(values.cep);
-                        console.log(cep_validate);
                         if (!cep_validate) {
                             return setValidates({
                             ...validates,
@@ -497,7 +637,6 @@ export const Registro: React.FC = () => {
                                 isInvalid: false,
                               },
                             })
-                            console.log(validates);
                         }
                     }}
                   />
@@ -539,14 +678,14 @@ export const Registro: React.FC = () => {
 
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Must be atleast 6 characters.
+                    Informe o logradouro da residência do seu funcionário.
                   </FormControlHelperText>
                 </FormControlHelper>
 
                 <FormControlError>
                   <FormControlErrorIcon as={AlertCircleIcon} />
                   <FormControlErrorText>
-                    Atleast 6 characters are required.
+                    O campo não pode estar vázio.
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
@@ -640,14 +779,14 @@ export const Registro: React.FC = () => {
 
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Must be atleast 6 characters.
+                    Informe o seu bairro.
                   </FormControlHelperText>
                 </FormControlHelper>
 
                 <FormControlError>
                   <FormControlErrorIcon as={AlertCircleIcon} />
                   <FormControlErrorText>
-                    Atleast 6 characters are required.
+                    O campo bairro não pode ser vázio.
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
@@ -781,9 +920,9 @@ export const Registro: React.FC = () => {
 
               {/* Email */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.email.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.email.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
@@ -793,29 +932,50 @@ export const Registro: React.FC = () => {
                   <InputField
                     type="text"
                     value={values.email}
+                    keyboardType="email-address"
                     placeholder="teste@teste.com"
+                    onChangeText={handleChange('email')}
+                    onBlur={() => {
+                      const regex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+                      if (!regex.test(values.email)) {
+                        return setValidates({
+                          ...validates,
+                          email: {
+                            isInvalid: true,
+                            isDisabled: false,
+                          }
+                        })
+                      }
+                      return setValidates({
+                        ...validates,
+                        email: {
+                          isInvalid: false,
+                          isDisabled: false,
+                        }
+                      })
+                    }}
                   />
                 </Input>
 
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Must be atleast 6 characters.
+                    Insira o email do seu usuário.
                   </FormControlHelperText>
                 </FormControlHelper>
 
                 <FormControlError>
                   <FormControlErrorIcon as={AlertCircleIcon} />
                   <FormControlErrorText>
-                    Atleast 6 characters are required.
+                    O email não pode ser inválido ou vázio.
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
 
               {/* Confirma Email */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.confirma_email.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.confirma_email.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
@@ -826,19 +986,39 @@ export const Registro: React.FC = () => {
                     type="text"
                     value={values.confirma_email}
                     placeholder="teste@teste.com"
+                    keyboardType="email-address"
+                    onChangeText={handleChange('confirma_email')}
+                    onBlur={() => {
+                      if (!values.confirma_email || values.confirma_email !== values.email) {
+                        return setValidates({
+                          ...validates,
+                          confirma_email: {
+                            isInvalid: true,
+                            isDisabled: false,
+                          },
+                        });
+                      }
+                      return setValidates({
+                        ...validates,
+                        confirma_email: {
+                          isInvalid: false,
+                          isDisabled: false,
+                        },
+                      })
+                    }}
                   />
                 </Input>
 
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Must be atleast 6 characters.
+                    Esse campo deve ser igual ao campo email.
                   </FormControlHelperText>
                 </FormControlHelper>
 
                 <FormControlError>
                   <FormControlErrorIcon as={AlertCircleIcon} />
                   <FormControlErrorText>
-                    Atleast 6 characters are required.
+                    Campos divergentes.
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
@@ -855,10 +1035,34 @@ export const Registro: React.FC = () => {
                 </FormControlLabel>
                 <Input>
                   <InputField
-                    type="password"
+                    type={senhasVisibility.senhaIsVisible ? "text" : "password"}
                     value={values.senha}
                     placeholder="********"
+                    onChangeText={handleChange('senha')}
+                    onBlur={() => {
+                      if(!validarSenha(values.senha)){
+                        return setValidates({
+                          ...validates,
+                          senha: {
+                            isInvalid: true,
+                            isDisabled: false,
+                          },
+                        })
+                      }
+                      return setValidates({
+                        ...validates,
+                        senha: {
+                          isInvalid: false,
+                          isDisabled: false,
+                        },
+                      })
+                    }}
                   />
+                  <Button
+                    onPress={() => setSenhasVisibility({ ...senhasVisibility, senhaIsVisible: senhasVisibility.senhaIsVisible ? false : true,})}
+                  >
+                    <ButtonIcon as={senhasVisibility.senhaIsVisible ? EyeOffIcon : EyeIcon} />
+                  </Button>
                 </Input>
 
                 <FormControlHelper>
@@ -887,30 +1091,34 @@ export const Registro: React.FC = () => {
                 </FormControlLabel>
                 <Input>
                   <InputField
-                    type="password"
+                    type={senhasVisibility.confirma_senhaIsVisible ? "text" : "password"}
                     value={values.confirma_senha}
                     placeholder="********"
                     onChangeText={(text) => {
-                        setFieldValue('confirma_senha', text)
-                        if (text !== values.confirma_senha) {
-                            setValidates({
-                                ...validates,
-                                confirma_senha: {
-                                    isDisabled: false,
-                                    isInvalid: true
-                                }
-                            })
-                        } else {
-                            setValidates({
-                                ...validates,
-                                confirma_senha: {
-                                    isDisabled: false,
-                                    isInvalid: false
-                                },
-                            });
-                        }
+                      setFieldValue('confirma_senha', text)
+                      if (text !== values.senha) {
+                          return setValidates({
+                              ...validates,
+                              confirma_senha: {
+                                  isDisabled: false,
+                                  isInvalid: true
+                              }
+                          })
+                      }
+                      return setValidates({
+                        ...validates,
+                        confirma_senha: {
+                            isDisabled: false,
+                            isInvalid: false
+                        },
+                      });
                     }}
                   />
+                  <Button
+                    onPress={() => setSenhasVisibility({ ...senhasVisibility, confirma_senhaIsVisible: senhasVisibility.confirma_senhaIsVisible ? false : true,})}
+                  >
+                    <ButtonIcon as={senhasVisibility.confirma_senhaIsVisible ? EyeOffIcon : EyeIcon} />
+                  </Button>
                 </Input>
 
                 <FormControlHelper>

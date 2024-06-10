@@ -1,5 +1,7 @@
 
 export type RootStackParamList = {
+    "app-screens"?: {  },
+    "auth-screens"?: {  },
     "code-scanner"?: { screen: string, }
     "cadastrar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
     "atualizar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
@@ -10,6 +12,9 @@ export type RootStackParamList = {
     "cadastrar-vendas"?: {  },
     "atualizar-vendas"?: {  },
     "visualizar-vendas"?: {  },
+    "vendas-screens"?: {},
+    "clientes-screens"?: {},
+    "produtos-screens"?: {},
     "login"?: {  },
     "registro"?: { authorized: boolean }
 }

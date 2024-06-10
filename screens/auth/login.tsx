@@ -64,6 +64,7 @@ import * as LocalAuthentication from "expo-local-authentication";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
@@ -127,12 +128,13 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
           }}
           onSubmit={async (values, actions) => {
             try {
+              const { login, password } = values;
               const response = await fetch(`${api_url}auth/login`, { // substitua com a URL correta
                 method: 'POST',
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ login: values.login, senha: values.password })
+                body: JSON.stringify({ login, senha: password})
               });
 
               if (!response.ok) {
@@ -143,8 +145,8 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
               // O token JWT deve estar no campo 'access_token' da resposta
               const jwt = data.access_token;
-
-              console.log(jwt);
+              await AsyncStorage.setItem('token', jwt);
+              navigation.navigate("app-screens");
             } catch (error) {
               console.error('There has been a problem with your fetch operation: ', error);
             }
