@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   FormControl,
   FormControlLabel,
@@ -62,16 +62,21 @@ import {
 } from "@gluestack-ui/themed";
 import { Box } from "@gluestack-ui/themed";
 import { Formik } from "formik";
-import { GestureResponderEvent } from "react-native";
+import { Alert, GestureResponderEvent } from "react-native";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { ResultsSearchCeps, validateObjectsRegisterForm } from "../../types";
 import * as SplashScreen from "expo-splash-screen";
+import { validatePathConfig } from "@react-navigation/native";
 
 
 SplashScreen.preventAutoHideAsync();
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 export const Registro: React.FC = () => {
+  const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
+
+  const cpfInputRef = useRef(null);
+
   const [validates, setValidates] = useState<validateObjectsRegisterForm>({
     nome_completo: {
       isInvalid: false,
@@ -211,7 +216,7 @@ export const Registro: React.FC = () => {
         <Formik
           initialValues={{
             nome_completo: "",
-            data_de_nascimento: new Date(),
+            data_de_nascimento: new Date(new Date().getFullYear() - 15, new Date().getMonth(), new Date().getDate()),
             cpf: "",
             cep: "",
             logradouro: "",
@@ -289,6 +294,8 @@ export const Registro: React.FC = () => {
                     onPress={() => {
                       DateTimePickerAndroid.open({
                         value: values.data_de_nascimento,
+                        minimumDate: new Date(1800, 1, 1),
+                        maximumDate: new Date(new Date().getFullYear() - 15, new Date().getMonth(), new Date().getDate()),
                         onChange: (event, date) => {
                           setFieldValue("data_de_nascimento", date);
                         },
@@ -325,11 +332,16 @@ export const Registro: React.FC = () => {
                 </FormControlLabel>
                 <Input>
                   <InputField
+                    ref={cpfInputRef}
                     type="text"
                     value={values.cpf}
                     placeholder="123.23.123-12"
                     onChangeText={(text) => {
-                      const cpf = cpf_format(text);
+                      
+                      return setFieldValue("cpf", text);
+                    }}
+                    onBlur={() => {
+                      const cpf = cpf_format(values.cpf);
                       if (!cpf) {
                         return setValidates({
                           ...validates,
@@ -339,6 +351,13 @@ export const Registro: React.FC = () => {
                           },
                         });
                       }
+                      setValidates({
+                        ...validates,
+                        cpf: {
+                          isDisabled: false,
+                          isInvalid: false,
+                        }
+                      })
                       return setFieldValue("cpf", cpf);
                     }}
                   />
@@ -372,10 +391,33 @@ export const Registro: React.FC = () => {
                   <InputField
                     type="text"
                     value={values.cep}
+                    keyboardType="number-pad"
                     placeholder="12.123-123"
                     onChangeText={handleChange("cep")}
                     onBlur={async () => {
-                        SplashScreen.preventAutoHideAsync()
+                        setValidates({
+                          ...validates,
+                          logradouro: {
+                            isDisabled: true,
+                            isInvalid: false,
+                          },
+                          complemento: {
+                            isDisabled: true,
+                            isInvalid: false,
+                          },
+                          bairro: {
+                            isDisabled: true,
+                            isInvalid: false,
+                          },
+                          cidade: {
+                            isDisabled: true,
+                            isInvalid: false,
+                          },
+                          uf: {
+                            isDisabled: true,
+                            isInvalid: false,
+                          },
+                        })
                         const cep_validate = cep_format(values.cep);
                         console.log(cep_validate);
                         if (!cep_validate) {
@@ -422,41 +464,40 @@ export const Registro: React.FC = () => {
                                 },
                             });
                             }
-                            setFieldValue("cep", cep_validate);
-                            setFieldValue("logradouro", data.logradouro);
+                            await setFieldValue("cep", cep_validate);
+                            await setFieldValue("logradouro", data.logradouro);
+                            await setFieldValue("complemento", data.complemento);
+                            await setFieldValue("bairro", data.bairro);
+                            await setFieldValue("cidade", data.localidade);
+                            await setFieldValue("uf", data.uf);
                             setValidates({
-                            ...validates,
-                            logradouro: {
+                              ...validates,
+                              cep: {
+                                isDisabled: false,
+                                isInvalid: false,
+                              },
+                              logradouro: {
                                 isDisabled: true,
                                 isInvalid: false,
-                            },
-                            });
-                            setFieldValue("complemento", data.complemento);
-                            setFieldValue("bairro", data.bairro);
-                            setValidates({
-                            ...validates,
-                            bairro: {
+                              },
+                              complemento: {
+                                isDisabled: false,
+                                isInvalid: false,
+                              },
+                              bairro: {
                                 isDisabled: true,
                                 isInvalid: false,
-                            },
-                            });
-                            setFieldValue("cidade", data.localidade);
-                            setValidates({
-                            ...validates,
-                            cidade: {
+                              },
+                              cidade: {
                                 isDisabled: true,
                                 isInvalid: false,
-                            },
-                            });
-                            setFieldValue("uf", data.uf);
-                            setValidates({
-                            ...validates,
-                            uf: {
+                              },
+                              uf: {
                                 isDisabled: true,
                                 isInvalid: false,
-                            },
-                            });
-                            console.log(data);
+                              },
+                            })
+                            console.log(validates);
                         }
                     }}
                   />
@@ -546,22 +587,22 @@ export const Registro: React.FC = () => {
 
               {/* Complemento */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.complemento.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.complemento.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
                   <FormControlLabelText>Complemento</FormControlLabelText>
                 </FormControlLabel>
-                <Input>
-                  <InputField
+                <Textarea>
+                  <TextareaInput
                     type="text"
                     value={values.complemento}
                     placeholder="Até 501"
                     onChangeText={handleChange('complemento')}
                   />
-                </Input>
+                </Textarea>
 
                 <FormControlHelper>
                   <FormControlHelperText>
@@ -579,9 +620,9 @@ export const Registro: React.FC = () => {
 
               {/* Bairro */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.bairro.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.bairro.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
@@ -613,9 +654,9 @@ export const Registro: React.FC = () => {
 
               {/* Cidade */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.cidade.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.cidade.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
@@ -647,9 +688,9 @@ export const Registro: React.FC = () => {
 
               {/* UF */}
               <FormControl
-                isInvalid={false}
+                isInvalid={validates.uf.isInvalid}
                 size={"md"}
-                isDisabled={false}
+                isDisabled={validates.uf.isDisabled}
                 isRequired={true}
               >
                 <FormControlLabel>
@@ -695,19 +736,45 @@ export const Registro: React.FC = () => {
                     value={values.username}
                     placeholder="ex. juju123"
                     onChangeText={handleChange('username')}
+                    onBlur={async () => {
+                      const result: Array<any> = await fetch(`${api_url}user/all/username/${values.username}`)
+                        .then(async (resp) => {
+                          if (!resp.ok) {
+                            return Alert.alert("Erro", "Não foi possível validar o usuário tente novamente");
+                          }
+                          return await resp.json(); 
+                        });
+                      if(result.length > 0){
+                        Alert.alert("Erro", "Este usuário já existe");
+                        return setValidates({
+                          ...validates,
+                          username: {
+                            isInvalid: true,
+                            isDisabled: false,
+                          },
+                        })
+                      }
+                      return setValidates({
+                        ...validates,
+                        username: {
+                          isInvalid: false,
+                          isDisabled: false,
+                        },
+                      })
+                    }}
                   />
                 </Input>
 
                 <FormControlHelper>
                   <FormControlHelperText>
-                    Must be atleast 6 characters.
+                    Insira o usuário para seu funcionário.
                   </FormControlHelperText>
                 </FormControlHelper>
 
                 <FormControlError>
                   <FormControlErrorIcon as={AlertCircleIcon} />
                   <FormControlErrorText>
-                    Atleast 6 characters are required.
+                    O campo usuário não pode ser vázio ou ja ser existente.
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
