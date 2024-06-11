@@ -68,8 +68,8 @@ import { Alert, GestureResponderEvent } from "react-native";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { ResultsSearchCeps, RootStackParamList, validateObjectsRegisterForm } from "../../types";
 import * as SplashScreen from "expo-splash-screen";
-import { RouteProp, validatePathConfig } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RouteProp } from "@react-navigation/native";
 
 type Dados = {
   [key: string]: {
@@ -79,13 +79,18 @@ type Dados = {
 }
 
 interface IRegistroProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, 'registro'>;
-  route: RouteProp<RootStackParamList, 'registro'>;
+  navigation: NativeStackNavigationProp<RootStackParamList, "registro">;
+  route: RouteProp<RootStackParamList, "registro">;
 }
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
 export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
+
+  if(!route.params?.authorized){
+    navigation.goBack();
+  }
+
 
   const [senhasVisibility, setSenhasVisibility] = useState<{ senhaIsVisible: boolean, confirma_senhaIsVisible: boolean }>({ senhaIsVisible: false, confirma_senhaIsVisible: false })
 

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Box,
   Text,
@@ -65,6 +65,7 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SplashScreen from "expo-splash-screen";
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
@@ -74,36 +75,11 @@ interface ILoginProps {
 }
 
 
+SplashScreen.preventAutoHideAsync();
 
 export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
 
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
-
-  
-  /* const getPokemonData = (login: string, senha: string) => {
-    const endpoint = api_url + 'teste';
-
-    fetch(endpoint, {
-      method: 'POST',
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ login, senha })
-    })
-      .then(resposta => resposta.json())
-        .then( json => {
-          const pokemon = {
-            nome: json.name,
-            img: json.sprites.other["official-artwork"].front_default,
-            peso: json.weight,
-          };
-          console.log(pokemon);
-        })
-        .catch(() => {
-          Alert.alert('Erro', 'Não foi possível carregar os dados do Pokémon');
-        });
-  } */
-
 
   const registrar_funcionario = async () => {
     const auth = await LocalAuthentication.authenticateAsync({
@@ -115,6 +91,15 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
       });
     }
   };
+
+  useEffect(() => {
+    
+  }, [])
+
+
+
+
+
   return (
     <Box h="$full" w="$full" alignItems="center">
       <Text my="$5" textAlign="center" size="2xl">
