@@ -4,7 +4,6 @@ import * as SplashScreen from 'expo-splash-screen'
 import { useEffect, useState } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-
 const Stack = createNativeStackNavigator();
 
 SplashScreen.preventAutoHideAsync();
@@ -13,9 +12,8 @@ export const AppNavigator = () => {
 
     const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
-    const [start_screen, set_start_screen] = useState<"auth-screens" | "app-screens">("auth-screens");
-    const [is_loading, set_is_loading] = useState<boolean>(true);
-
+    const [is_auth, set_is_auth] = useState<boolean>(false);
+    const [is_verified, set_is_verified] = useState<boolean>(false);
 
     useEffect(() => {
         async function start() {
@@ -28,35 +26,39 @@ export const AppNavigator = () => {
                     method: 'GET'
                 })
                 if (!result.ok) {
-                    return set_start_screen("auth-screens");
+                    set_is_auth(false);
+                } else {
+                    const user_data = await result.json();
+                    if (!user_data) {
+                        set_is_auth(false);
+                    } else {
+                        set_is_auth(true);
+                    }
                 }
-                const user_data = await result.json();
-                if (!user_data) {
-                    set_start_screen("auth-screens");
-                }
-                return set_start_screen("app-screens");
             } catch(error){
                 console.error(error);
-                return set_start_screen("auth-screens");
+                set_is_auth(false);
+            } finally {
+                set_is_verified(true);
             }
-            
         }
-        if(is_loading){
-            start();
-            set_is_loading(false);
-        } else {
-            SplashScreen.hideAsync()
-        }
-    },[is_loading])
+        start();
+    },[])
 
-    if(is_loading){
+    useEffect(() => {
+        if(is_verified && is_auth){
+            SplashScreen.hideAsync();
+        }
+    },[is_auth, is_verified])
+
+    if(!is_verified){
         return null
     }
+
     return (
-        <Stack.Navigator>
-            {   start_screen === "auth-screens" ? (<Stack.Screen name="auth-screens" component={AuthScreens} options={{ headerShown:false }} />) :
-                (<Stack.Screen name="app-screens" component={AppScreens} options={{ headerShown: false }} />)
-            }
+        <Stack.Navigator initialRouteName={"app-screens"} >
+            <Stack.Screen name="auth-screens" component={AuthScreens} options={{ headerShown: false }} />
+            <Stack.Screen name="app-screens" component={AppScreens} options={{ headerShown: false }} />
         </Stack.Navigator>
     )
 }

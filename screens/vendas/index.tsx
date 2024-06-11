@@ -9,8 +9,8 @@ export const Vendas_screens: React.FC = () => {
     return (
         <Stack.Navigator>
             <Stack.Screen name="visualizar-vendas" options={{ title: "Visualizar Vendas" }} component={View} />
-            <Stack.Screen name="cadastrar-vendas" options={{ title: "Cadastrar Vendas", headerShown: false }} component={Create} />
-            <Stack.Screen name="atualizar-vendas" options={{ title: "Atualizar Vendas", headerShown: false }} component={Update} />
+            <Stack.Screen name="cadastrar-vendas" options={{ title: "Cadastrar Vendas",}} component={Create} />
+            <Stack.Screen name="atualizar-vendas" options={{ title: "Atualizar Vendas",}} component={Update} />
         </Stack.Navigator>
     )
 }

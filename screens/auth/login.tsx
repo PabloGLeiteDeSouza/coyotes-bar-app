@@ -57,6 +57,9 @@ import {
   CheckIcon,
   AlertCircleIcon,
   ChevronDownIcon,
+  ButtonIcon,
+  EyeOffIcon,
+  EyeIcon,
 } from "@gluestack-ui/themed";
 import { Formik } from "formik";
 import { Alert, GestureResponderEvent } from "react-native";
@@ -77,6 +80,8 @@ interface ILoginProps {
 export const Login: React.FC<ILoginProps> = ({ navigation }) => {
 
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
+
+  const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
 
   const registrar_funcionario = async () => {
     const auth = await LocalAuthentication.authenticateAsync({
@@ -180,11 +185,16 @@ export const Login: React.FC<ILoginProps> = ({ navigation }) => {
                   </FormControlLabel>
                   <Input>
                     <InputField
-                      type="password"
+                      type={passwordIsVisible ? "text" : "password"}
                       value={values.password}
                       onChangeText={handleChange("password")}
                       placeholder="password"
                     />
+                    <Button
+                      onPress={() => { setPasswordIsVisible(!passwordIsVisible) }}
+                    >
+                      <ButtonIcon as={passwordIsVisible ? EyeOffIcon : EyeIcon} />
+                    </Button>
                   </Input>
 
                   <FormControlHelper>

@@ -6,6 +6,7 @@ import { Vendas_screens } from "./vendas";
 import { Produtos_screens } from "./produtos";
 import { Clientes_screens } from "./clientes";
 import { Registro } from "./auth/registro";
+import {FontAwesome5, FontAwesome6, Entypo} from "@expo/vector-icons";
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -13,9 +14,9 @@ const Tab = createBottomTabNavigator();
 export const AppScreens: React.FC = () => {
     return (
         <Tab.Navigator initialRouteName="vendas-screens" >
-            <Tab.Screen name="vendas-screens" options={{ title: "Vendas", headerShown: false }} component={Vendas_screens} />
-            <Tab.Screen name="bebidas-screens" options={{ title: "Bebidas", headerShown: false }} component={Produtos_screens} />
-            <Tab.Screen name="clientes-screens" options={{ title: "Clientes", headerShown: false }} component={Clientes_screens} />
+            <Tab.Screen name="vendas-screens" options={{ tabBarIcon: ({color, focused, size}) => (<Entypo name="shop" size= {size} color={color} focused={focused} />), title: "Vendas", headerShown: false }} component={Vendas_screens} />
+            <Tab.Screen name="bebidas-screens" options={{ tabBarIcon: ({color, focused, size}) => (<FontAwesome5 name="wine-bottle" size= {size} color={color} focused={focused} />), title: "Bebidas", headerShown: false }} component={Produtos_screens} />
+            <Tab.Screen name="clientes-screens" options={{ tabBarIcon: ({color, focused, size}) => (<FontAwesome6 name="person" size= {size} color={color} focused={focused} />), title: "Clientes", headerShown: false }} component={Clientes_screens} />
         </Tab.Navigator>
     )
 }
