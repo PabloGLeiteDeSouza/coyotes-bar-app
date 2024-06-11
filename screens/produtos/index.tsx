@@ -5,12 +5,12 @@ import { Update } from "./Update";
 
 const Stack = createNativeStackNavigator();
 
-export const produtos_screens: React.FC = () => {
+export const Produtos_screens: React.FC = () => {
     return (
         <Stack.Navigator>
-            <Stack.Screen name="visualizar-produtos" component={View} />
-            <Stack.Screen name="cadastrar-produtos" component={Create} />
-            <Stack.Screen name="atualizar-produtos" component={Update} />
+            <Stack.Screen name="visualizar-produtos" options={{ title: "Visualizar Produtos" }} component={View} />
+            <Stack.Screen name="cadastrar-produtos" options={{ title: "Cadastrar Produtos" }} component={Create} />
+            <Stack.Screen name="atualizar-produtos" options={{ title: "Atualizar Produtos" }} component={Update} />
         </Stack.Navigator>
     )
 }

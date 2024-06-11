@@ -16,7 +16,7 @@ export type RootStackParamList = {
     "clientes-screens"?: {},
     "produtos-screens"?: {},
     "login"?: {  },
-    "registro"?: { authorized: boolean }
+    "registro"?: { authorized?: boolean }
 }
 
 export type ResultsSearchCeps = {

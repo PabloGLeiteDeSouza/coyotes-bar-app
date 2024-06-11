@@ -33,8 +33,8 @@ export const Application: React.FC = () => {
                     </Box>
                     <Button 
                         position="absolute"
-                        bottom={10}
-                        right={10}
+                        bottom={65}
+                        right={15}
                         onPress={toggleTheme}
                     >
                         <ButtonIcon as={theme === "dark" ? SunIcon : MoonIcon} />

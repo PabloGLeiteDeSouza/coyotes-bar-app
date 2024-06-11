@@ -65,7 +65,6 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import * as SplashScreen from "expo-splash-screen";
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
@@ -75,9 +74,7 @@ interface ILoginProps {
 }
 
 
-SplashScreen.preventAutoHideAsync();
-
-export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
+export const Login: React.FC<ILoginProps> = ({ navigation }) => {
 
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
@@ -91,14 +88,6 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
       });
     }
   };
-
-  useEffect(() => {
-    
-  }, [])
-
-
-
-
 
   return (
     <Box h="$full" w="$full" alignItems="center">
@@ -119,7 +108,7 @@ export const Login: React.FC<ILoginProps> = ({ navigation, route }) => {
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ login, senha: password})
+                body: JSON.stringify({ username: login, password})
               });
 
               if (!response.ok) {
