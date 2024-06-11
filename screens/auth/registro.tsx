@@ -79,11 +79,12 @@ type Dados = {
 }
 
 interface IRegistroProps {
-  navigation: NativeStackNavigationProp<RootStackParamList, "registro">;
-  route: RouteProp<RootStackParamList, "registro">;
+  navigation: NativeStackNavigationProp<RootStackParamList, 'registro'>;
+  route: RouteProp<RootStackParamList, 'registro'>;
 }
 
 type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
+
 export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
 
   const [senhasVisibility, setSenhasVisibility] = useState<{ senhaIsVisible: boolean, confirma_senhaIsVisible: boolean }>({ senhaIsVisible: false, confirma_senhaIsVisible: false })
