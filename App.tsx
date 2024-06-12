@@ -9,7 +9,14 @@ import Logo from './assets/Icons/Logo';
 import { ThemeProvider } from './providers/theme';
 import { Application } from './components/Application';
 import { StorageProvider } from './providers/storage';
+import * as SplashScreen from 'expo-splash-screen';
+
+
+
 export default function App() {
+
+  SplashScreen.preventAutoHideAsync();
+
   return (
     <ThemeProvider>
       <StorageProvider>

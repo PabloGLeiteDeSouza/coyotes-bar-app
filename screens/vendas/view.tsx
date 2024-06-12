@@ -18,9 +18,14 @@ interface IVendasViewProps {
 
 export const View: React.FC<IVendasViewProps> = ({navigation}) => {
 
+    SplashScreen.preventAutoHideAsync();
+
+
     const {theme} = useTheme();
 
     const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
+
+    const [validations, setValidations] = useState({ clientes: false, produtos: false })
 
     const [vendas, setVendas] = useState<Array<any>>([])
 
@@ -29,13 +34,23 @@ export const View: React.FC<IVendasViewProps> = ({navigation}) => {
     useEffect(() => {
         async function StartView() {
             try {
-                const result_vendas = await fetch(`${api_url}venda`);
-                if (!result_vendas.ok) {
+                const res_vendas = await fetch(`${api_url}venda`);
+                const res_clientes = await fetch(`${api_url}cliente`);
+                const res_produtos = await fetch(`${api_url}produto`);
+                const clientes: Array<any> = await res_clientes.json();
+                const produtos: Array<any> = await res_produtos.json();
+                if(clientes.length < 1){
+                    setValidations({ ...validations, clientes: true });
+                }
+                if(produtos.length < 1){
+                    setValidations({ ...validations, produtos: true });
+                }
+                if (!res_vendas.ok) {
                     Alert.alert("Erro", "Houve um erro ao buscar os vendas tente novamente");
                     navigation.navigate("app-screens");
-                    return console.error(`Erro ao realizar a requisição HTTP code:${result_vendas.status}`);
+                    return console.error(`Erro ao realizar a requisição HTTP code:${res_vendas.status}`);
                 }
-                const vebdas = await result_vendas.json();
+                const vendas = await res_vendas.json();
                 setVendas(vendas);
             } catch (error) {
                 console.error(error);
@@ -46,9 +61,7 @@ export const View: React.FC<IVendasViewProps> = ({navigation}) => {
         if (isLoad) {
             StartView();
             setIsLoad(false);
-        } else [
-            SplashScreen.hideAsync()
-        ]
+        }
     }, [])
 
     if (isLoad) {
@@ -70,26 +83,79 @@ export const View: React.FC<IVendasViewProps> = ({navigation}) => {
                         alignItems="center"
                         justifyContent="center"
                     >
-                        <Box
-                            gap="$10"
-                        >
-                            <Text
-                                size="2xl"
-                            >
-                                Nenhuma venda encontrada
-                            </Text>
-                            <Button
-                                onPress={() => {
-                                    navigation.navigate("cadastrar-vendas");
-                                }}
-                            >
-                                <ButtonText>
-                                    Cadastrar Venda
-                                </ButtonText>
-                                <ButtonIcon size="sm" ml="$3" as={FontAwesome5} name="plus-circle" >
-                                </ButtonIcon>
-                            </Button>
-                        </Box>
+                        {
+                            validations.clientes ? (
+                                <>
+                                    <Box
+                                        gap="$10"
+                                    >
+                                        <Text
+                                            size="2xl"
+                                        >
+                                            Nenhum cliente encontrado
+                                        </Text>
+                                        <Button
+                                            onPress={() => {
+                                                navigation.navigate("clientes-screens");
+                                            }}
+                                        >
+                                            <ButtonText>
+                                                Cadastrar Venda
+                                            </ButtonText>
+                                            <ButtonIcon size="sm" ml="$3" as={AddIcon} >
+                                            </ButtonIcon>
+                                        </Button>
+                                    </Box>
+                                </>
+                            ) : validations.produtos ? (
+                                <>
+                                    <Box
+                                        gap="$10"
+                                    >
+                                        <Text
+                                            size="2xl"
+                                        >
+                                            Nenhum produto encontrado
+                                        </Text>
+                                        <Button
+                                            onPress={() => {
+                                                navigation.navigate("produtos-screens");
+                                            }}
+                                        >
+                                            <ButtonText>
+                                                Cadastrar Produto
+                                            </ButtonText>
+                                            <ButtonIcon size="sm" ml="$3" as={AddIcon}>
+                                            </ButtonIcon>
+                                        </Button>
+                                    </Box>
+                                </>
+                            ) : (
+                                <>
+                                    <Box
+                                        gap="$10"
+                                    >
+                                        <Text
+                                            size="2xl"
+                                        >
+                                            Nenhuma venda encontrada
+                                        </Text>
+                                        <Button
+                                            onPress={() => {
+                                                navigation.navigate("cadastrar-vendas");
+                                            }}
+                                        >
+                                            <ButtonText>
+                                                Cadastrar Venda
+                                            </ButtonText>
+                                            <ButtonIcon size="sm" ml="$3" as={AddIcon} >
+                                            </ButtonIcon>
+                                        </Button>
+                                    </Box>
+                                </>
+                            )
+                        }
+                        
                     </Box>
                 )
             }

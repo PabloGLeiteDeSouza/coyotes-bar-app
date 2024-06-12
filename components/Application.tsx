@@ -3,12 +3,15 @@ import { Box, Button, ButtonIcon, ButtonText, GluestackUIProvider, MoonIcon, Sun
 import { useTheme } from "../providers/theme";
 import { NavigationContainer, Theme } from "@react-navigation/native";
 import { AppNavigator } from "./AppNavigator";
+import * as SplashScreen from "expo-splash-screen";
 
 
 
 
 export const Application: React.FC = () => {
     
+    SplashScreen.preventAutoHideAsync();
+
     const {theme, toggleTheme} = useTheme();
     
     const Theme = {

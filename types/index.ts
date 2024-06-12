@@ -1,8 +1,11 @@
+import { GestureResponderEvent } from "react-native";
+
+export type FormSubmitReact = (event?: GestureResponderEvent) => void | undefined;
 
 export type RootStackParamList = {
     "app-screens"?: {  },
     "auth-screens"?: {  },
-    "code-scanner"?: { screen: string, }
+    "code-scanner"?: { screen?: string, }
     "cadastrar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
     "atualizar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
     "visualizar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
@@ -12,11 +15,33 @@ export type RootStackParamList = {
     "cadastrar-vendas"?: {  },
     "atualizar-vendas"?: {  },
     "visualizar-vendas"?: {  },
+    "cadastrar-empresas"?: {  },
+    "atualizar-empresas"?: { empresa?: TEmpresaApi },
+    "visualizar-empresas"?: { updated?: boolean },
     "vendas-screens"?: {},
     "clientes-screens"?: {},
     "produtos-screens"?: {},
+    "empresas-screens"?: {},
     "login"?: {  },
     "registro"?: { authorized?: boolean }
+}
+
+export type TEmpresaApi = {
+    id: number, 
+    nome: string, 
+    razao_social: string, 
+    cnpj: string,
+    id_pessoa: number, 
+    id_pessoa_juridica: number,
+    ramo: string;
+} | { 
+    id: number, 
+    nome: string, 
+    cpf: string, 
+    data_de_nascimento: Date, 
+    id_pessoa: number, 
+    id_pessoa_fisica: number,
+    ramo: string;
 }
 
 export type ResultsSearchCeps = {

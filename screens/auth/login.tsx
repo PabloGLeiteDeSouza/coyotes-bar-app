@@ -64,6 +64,7 @@ import {
 import { Formik } from "formik";
 import { Alert, GestureResponderEvent } from "react-native";
 import * as LocalAuthentication from "expo-local-authentication";
+import * as SplashScreen from "expo-splash-screen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../../types";
 import { RouteProp } from "@react-navigation/native";
