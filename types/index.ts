@@ -10,7 +10,7 @@ export type RootStackParamList = {
     "atualizar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
     "visualizar-produtos"?: { bar_code?: string, code_scanner_result?: boolean },
     "cadastrar-clientes"?: {  },
-    "atualizar-clientes"?: {  },
+    "atualizar-clientes"?: { cliente?: ClientesData  },
     "visualizar-clientes"?: {  },
     "cadastrar-vendas"?: {  },
     "atualizar-vendas"?: {  },
@@ -74,6 +74,48 @@ export type validateObjectsRegisterForm = {
     email: { isInvalid: boolean, isDisabled: boolean },
     confirma_email: { isInvalid: boolean, isDisabled: boolean },
     senha: { isInvalid: boolean, isDisabled: boolean },
-    confirma_senha: { isInvalid: boolean, isDisabled: boolean },
-      
+    confirma_senha: { isInvalid: boolean, isDisabled: boolean },  
+}
+
+export type ValidateObjectClienteRegister = {
+    nome_completo: { isInvalid: boolean, isDisabled: boolean },
+    data_de_nascimento: { isInvalid: boolean, isDisabled: boolean },
+    cpf: { isInvalid: boolean, isDisabled: boolean },
+    cep: { isInvalid: boolean, isDisabled: boolean },
+    logradouro: { isInvalid: boolean, isDisabled: boolean },
+    numero: { isInvalid: boolean, isDisabled: boolean },
+    complemento: { isInvalid: boolean, isDisabled: boolean },
+    bairro: { isInvalid: boolean, isDisabled: boolean },
+    cidade: { isInvalid: boolean, isDisabled: boolean },
+    UF: { isInvalid: boolean, isDisabled: boolean },
+    limite: { isInvalid: boolean, isDisabled: boolean },
+}
+
+export type ValidateData = {
+    [key: string]: {
+      isInvalid: boolean,
+      isDisabled: boolean,
+    }
+}
+
+export type ClientesData = { 
+    nome: string, 
+    id_pessoa: number, 
+    limite: number, 
+    id: number, 
+    id_pessoa_fisica: number, 
+    cpf: string, 
+    data_de_nascimento: Date, 
+    enderecos: Array<EnderecosData>, 
+}
+
+export type EnderecosData = {
+    id: number;
+    rua: string;
+    numero: number;
+    bairro: string;
+    cidade: string;
+    UF: string;
+    cep: string;
+    pessoa_id: number;
 }

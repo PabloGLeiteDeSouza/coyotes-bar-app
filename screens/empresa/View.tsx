@@ -53,6 +53,7 @@ export const View: React.FC<IEmpresaViewProps> = ({navigation, route}) => {
             }
     
             // Atualiza a lista de empresas após a exclusão
+            Alert.alert("Sucesso", "Empresa deletada com sucesso!");
             start();
         } catch (error) {
             Alert.alert("Erro", "Erro ao excluir a empresa");
@@ -158,7 +159,7 @@ export const View: React.FC<IEmpresaViewProps> = ({navigation, route}) => {
                                                     onPress={() => {
                                                         Alert.alert(
                                                             "Excluir Empresa",
-                                                            "Você tem certeza que deseja excluir esta empresa?",
+                                                            `Você tem certeza que deseja excluir a empresa ${empresa.nome}?`,
                                                             [
                                                                 {
                                                                     text: "Cancelar",

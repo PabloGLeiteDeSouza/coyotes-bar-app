@@ -1,6 +1,6 @@
-const cep_format = (cep: string) => {
+export const cep_format = (cep: string) => {
     // Remove todos os caracteres não numéricos
-    cep = cep.replace(/\D/g, "");
+    let CEP = cep.replace(/\D/g, "");
 
     // Verifica se o CEP tem o tamanho correto
     if (cep.length !== 8) {
