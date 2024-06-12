@@ -65,6 +65,7 @@ import { ButtonText } from "@gluestack-ui/themed";
 import { Formik } from "formik";
 import { DateTimePickerAndroid } from "@react-native-community/datetimepicker";
 import { ButtonIcon } from "@gluestack-ui/themed";
+import { Alert } from "react-native";
 interface IEmpresaUpdateProps {
   navigation: NativeStackNavigationProp<
     RootStackParamList,
@@ -190,6 +191,7 @@ export const Update: React.FC<IEmpresaUpdateProps> = ({
               if (!empresa || !pessoa_tipo) {
                 return;
               }
+              Alert.alert("Sucesso!", "Empresa atualizada com sucesso!");
               navigation.navigate("visualizar-empresas", { updated: true});
             }}
           >
@@ -413,7 +415,7 @@ export const Update: React.FC<IEmpresaUpdateProps> = ({
                       </FormControlError>
                     </FormControl>
                     <Button onPress={handleSubmit as FormSubmitReact}>
-                      <ButtonText>Cadastrar</ButtonText>
+                      <ButtonText>Atualizar</ButtonText>
                     </Button>
                   </>
                 ) : (
@@ -485,7 +487,7 @@ export const Update: React.FC<IEmpresaUpdateProps> = ({
                       </FormControlError>
                     </FormControl>
                     <Button onPress={handleSubmit as FormSubmitReact}>
-                      <ButtonText>Cadastrar</ButtonText>
+                      <ButtonText>Atualizar</ButtonText>
                     </Button>
                   </>
                 )}

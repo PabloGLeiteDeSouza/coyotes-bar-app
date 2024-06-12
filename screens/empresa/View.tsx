@@ -127,17 +127,22 @@ export const View: React.FC<IEmpresaViewProps> = ({navigation, route}) => {
                                             gap="$5"
                                         >
                                             <Box
+                                                w="$56"
                                                 gap='$1'
                                             >
                                                 <Text
-                                                    size="xl"
+                                                    size="lg"
                                                 >
-                                                    { "id_pessoa_fisica" in empresa ? "Nome Completo" : "Nome Fantasia"} {empresa.nome}
+                                                    { "id_pessoa_fisica" in empresa ? (<Text fontWeight="$bold" >NOME COMPLETO:</Text>) : (<Text fontWeight="$bold" >NOME FANTASIA:</Text>)} {empresa.nome}
                                                 </Text>
-                                                <Text>Tipo: {"id_pessoa_fisica" in empresa ? "Pessoa Fisica" : "Pessoa Juridica"}</Text>
+                                                <Text 
+                                                    size="sm" 
+                                                >
+                                                    Tipo: {"id_pessoa_fisica" in empresa ? "Pessoa Fisica" : "Pessoa Juridica"}
+                                                </Text>
                                                 { "data_de_nascimento" in empresa ? (<Text>Data de nascimento: {new Date(empresa.data_de_nascimento).toLocaleDateString()}</Text>) : ""}
                                                 <Text>{"cnpj" in empresa ? "CNPJ: " + empresa.cnpj : "CPF: " + empresa.cpf}</Text>
-
+                                                <Text>RAMO: {empresa.ramo}</Text>
                                             </Box>
                                             <Box
                                                 gap="$2"

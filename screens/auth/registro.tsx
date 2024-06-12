@@ -70,6 +70,7 @@ import { ResultsSearchCeps, RootStackParamList, validateObjectsRegisterForm } fr
 import * as SplashScreen from "expo-splash-screen";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RouteProp } from "@react-navigation/native";
+import { api_url } from "../../constants/api_url";
 
 type Dados = {
   [key: string]: {
@@ -115,9 +116,7 @@ export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
            temMinuscula.test(senha) && 
            temNumero.test(senha) && 
            temCaractereEspecial.test(senha);
-}
-
-  const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
+  }
 
   const cpfInputRef = useRef(null);
 
