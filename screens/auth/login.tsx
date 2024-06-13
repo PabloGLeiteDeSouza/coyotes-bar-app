@@ -80,10 +80,14 @@ interface ILoginProps {
 
 export const Login: React.FC<ILoginProps> = ({ navigation }) => {
 
+  useEffect(() => {
+    SplashScreen.hideAsync();
+  }, [])
+
   const api_url = process.env.EXPO_PUBLIC_API_URL_BACKEND_APPLICATION;
 
   const [passwordIsVisible, setPasswordIsVisible] = useState<boolean>(false);
-
+  
   const registrar_funcionario = async () => {
     const auth = await LocalAuthentication.authenticateAsync({
       promptMessage: "Autorize a criação de um novo funcionário",

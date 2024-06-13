@@ -34,6 +34,14 @@ export type TEmpresaApi = {
     id_pessoa: number, 
     id_pessoa_juridica: number,
     ramo: string;
+    id_endereco: number;
+    rua: string;
+    numero: number;
+    complemento: string;
+    bairro: string;
+    cidade: string;
+    UF: string;
+    cep: string;
 } | { 
     id: number, 
     nome: string, 
@@ -42,6 +50,14 @@ export type TEmpresaApi = {
     id_pessoa: number, 
     id_pessoa_fisica: number,
     ramo: string;
+    id_endereco: number;
+    rua: string;
+    numero: number;
+    complemento: string;
+    bairro: string;
+    cidade: string;
+    UF: string;
+    cep: string;
 }
 
 export type ResultsSearchCeps = {
@@ -77,6 +93,22 @@ export type validateObjectsRegisterForm = {
     confirma_senha: { isInvalid: boolean, isDisabled: boolean },  
 }
 
+export type validateCreateEmpresaForm = {
+    nome_completo: { isInvalid: boolean, isDisabled: boolean },
+    data_de_nascimento: { isInvalid: boolean, isDisabled: boolean },
+    cpf: { isInvalid: boolean, isDisabled: boolean },
+    cnpj: { isInvalid: boolean, isDisabled: boolean },
+    nome_fantasia: { isInvalid: boolean, isDisabled: boolean },
+    razao_social: { isInvalid: boolean, isDisabled: boolean },
+    cep: { isInvalid: boolean, isDisabled: boolean },
+    logradouro: { isInvalid: boolean, isDisabled: boolean },
+    numero: { isInvalid: boolean, isDisabled: boolean },
+    complemento: { isInvalid: boolean, isDisabled: boolean },
+    bairro: { isInvalid: boolean, isDisabled: boolean },
+    cidade: { isInvalid: boolean, isDisabled: boolean },
+    uf: { isInvalid: boolean, isDisabled: boolean },
+}
+
 export type ValidateObjectClienteRegister = {
     nome_completo: { isInvalid: boolean, isDisabled: boolean },
     data_de_nascimento: { isInvalid: boolean, isDisabled: boolean },
@@ -106,16 +138,31 @@ export type ClientesData = {
     id_pessoa_fisica: number, 
     cpf: string, 
     data_de_nascimento: Date, 
-    enderecos: Array<EnderecosData>, 
+    id_endereco: number;
+    rua: string;
+    numero: number;
+    complemento: string;
+    bairro: string;
+    cidade: string;
+    UF: string;
+    cep: string; 
 }
 
 export type EnderecosData = {
     id: number;
     rua: string;
     numero: number;
+    complemento: string;
     bairro: string;
     cidade: string;
     UF: string;
     cep: string;
-    pessoa_id: number;
+}
+
+export type TEmpresasDeletePayload = {
+    id: number,
+    id_pessoa: number,
+    id_endereco: number,
+    id_pessoa_fisica: number | boolean,
+    id_pessoa_juridica: number | boolean,
 }

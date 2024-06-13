@@ -87,56 +87,16 @@ export const View: React.FC<IClienteViewProps> = ({navigation, route}) => {
                                 <ButtonText>Cadsatrar cliente</ButtonText>
                                 <ButtonIcon as={AddIcon} />
                             </Button>
-                            
                             {
-                                clientes.map((cliente, index) => (
-                                    <Box
-                                        py="$2.5"
-                                        px="$2.5"
-                                        $dark-bgColor="$blueGray600"
-                                        $light-bgColor="$blueGray300"
-                                        flexDirection="row"
-                                        gap="$2"
-                                    >
+                                clientes.map((e, i) => (
+                                    <>
                                         <Box
-                                            gap="$2"
+                                            key={i}
                                         >
-                                            <Text>Nome Completo: {cliente.nome}</Text>
-                                            <Box
-                                                
-                                                flexDirection="column"
-                                            >
-                                                {
-                                                    cliente.enderecos.map((endereco, i) => (
-                                                        <>
-                                                            <Text>Logradouro: {endereco.rua}</Text>
-                                                            <Text></Text>
-                                                        </>
-                                                    ))
-                                                }
-                                            </Box>
+                                            <Text>{e.nome}</Text>
+                                            <Text>{e.cpf}</Text>
                                         </Box>
-                                        <Box
-                                            gap="$2"
-                                        >
-                                            <Button
-                                                onPress={() => {
-                                                    navigation.navigate("atualizar-clientes", { cliente });
-                                                }}
-
-                                            >
-                                                <ButtonIcon as={EditIcon} />
-                                            </Button>
-                                            <Button
-                                                action="negative"
-                                                onPress={() => {
-                                                    
-                                                }}
-                                            >
-                                                <ButtonIcon as={TrashIcon} />
-                                            </Button>
-                                        </Box>
-                                    </Box>
+                                    </>
                                 ))
                             }
                         </Box>

@@ -156,6 +156,7 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
             onSubmit={async (payload) => {
                 try{
                     const {nome_completo, cpf, data_de_nascimento, logradouro, numero, complemento, cidade, cep, bairro, limite, UF } = payload;
+                    
                     if(!verificarInvalidos(validates)){
                         return Alert.alert("Erro", "Um ou mais dos campos ainda é ou são inválido(s)");
                     }
@@ -166,7 +167,7 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
                         },
                         body: JSON.stringify({ nome: nome_completo })
                     })
-    
+                    console.log('Complemento: ', complemento);
                     if (!data_pessoa.ok) {
                         return Alert.alert("Erro", "Não foi possivel criar o cliente");
                     }
@@ -180,17 +181,19 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
                         body: JSON.stringify({ 
                             rua: logradouro,
                             numero,
+                            complemento,
                             bairro, 
                             cidade, 
                             UF,
                             cep, 
-                            pessoa_id: pessoa.id 
                         })
                     })
 
                     if (!data_endereco.ok) {
                         return Alert.alert("Erro", "Não foi possivel criar o cliente");
                     }
+
+                    const endereco = await data_endereco.json();
 
                     const data_pessoa_fisica = await fetch(`${api_url}pessoa-fisica`, {
                         method: 'POST',
@@ -200,7 +203,8 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
                         body: JSON.stringify({ 
                           cpf,
                           data_de_nascimento,
-                          id_pessoa: pessoa.id 
+                          id_pessoa: pessoa.id,
+                          id_endereco: endereco.id,
                         }),
                     });
         
@@ -496,7 +500,7 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
                         await setFieldValue("complemento", data.complemento);
                         await setFieldValue("bairro", data.bairro);
                         await setFieldValue("cidade", data.localidade);
-                        await setFieldValue("uf", data.uf);
+                        await setFieldValue("UF", data.uf);
                         setValidates({
                           ...validates,
                           cep: {
@@ -728,7 +732,7 @@ export const Create: React.FC<ICreateClientesProps> = ({navigation}) => {
                     editable={!validates.UF.isDisabled}
                     value={values.UF}
                     placeholder="SP"
-                    onChangeText={handleChange("uf")}
+                    onChangeText={handleChange("UF")}
                   />
                 </Input>
 

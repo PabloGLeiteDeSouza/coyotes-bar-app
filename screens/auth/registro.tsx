@@ -278,6 +278,7 @@ export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
             try{
 
               const { bairro, cep, cidade, complemento, cpf, data_de_nascimento, logradouro, email, nome_completo, numero, uf, senha, username } = values;
+              
               if(!verificarInvalidos(validates)){
                 return Alert.alert("Erro", "Um dos campos ainda é inválido");
               }
@@ -304,17 +305,19 @@ export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
                 body: JSON.stringify({ 
                   rua: logradouro,
                   numero: Number(numero),
-                  bairro: bairro, 
-                  cidade: cidade, 
+                  complemento,
+                  bairro, 
+                  cidade, 
                   UF: uf, 
-                  cep: cep, 
-                  pessoa_id: pessoa.id 
+                  cep, 
                 })
               })
 
               if (!data_endereco.ok) {
                 return Alert.alert("Erro", "Não foi possivel criar o usuário");
               }
+
+              const endereco = await data_endereco.json();
   
               const data_pessoa_fisica = await fetch(`${api_url}pessoa-fisica`, {
                 method: 'POST',
@@ -324,7 +327,8 @@ export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
                 body: JSON.stringify({ 
                   cpf,
                   data_de_nascimento,
-                  id_pessoa: pessoa.id 
+                  id_pessoa: pessoa.id,
+                  id_endereco: endereco.id,
                 }),
               });
 
@@ -338,7 +342,7 @@ export const Registro: React.FC<IRegistroProps> = ({navigation, route}) => {
                 headers: {
                   'Content-Type': 'application/json'
                 },
-                body: JSON.stringify({ username: values.username, email: values.email, password: values.senha, id_pessoa: pessoa.id}),
+                body: JSON.stringify({ username: username, email: email, password: senha, id_pessoa: pessoa.id }),
               });
               
               if (!data_user.ok) {
