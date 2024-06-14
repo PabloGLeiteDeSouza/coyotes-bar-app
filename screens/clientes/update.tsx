@@ -61,7 +61,7 @@ import {
 } from "@gluestack-ui/themed";
 
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { FormSubmitReact, RootStackParamList, ValidateObjectClienteRegister } from "../../types";
+import { FormSubmitReact, ResultsSearchCeps, RootStackParamList, ValidateObjectClienteRegister } from "../../types";
 import { RouteProp } from "@react-navigation/native";
 import { Box, ScrollView } from "@gluestack-ui/themed";
 import { cpf_format } from "../../utils/cpf_format";
@@ -141,23 +141,26 @@ export const Update: React.FC<ICreateClientesProps> = ({
         <Text size="2xl">Informe os dados do cliente abaixo:</Text>
         <Formik
           initialValues={{
-            id: cliente.id,
-            id_pessoa: cliente.id_pessoa,
-            nome_completo: cliente.nome,
-            data_de_nascimento: cliente.data_de_nascimento,
-            cpf: cliente.cpf,
-            cep: cliente.cep,
-            limite: cliente.limite,
+            ...cliente
           }}
           onSubmit={async (payload) => {
             try {
               const {
+                nome,
+                id_pessoa,
+                limite,
                 id,
-                nome_completo,
+                id_pessoa_fisica,
                 cpf,
                 data_de_nascimento,
-                enderecos,
-                limite,
+                id_endereco,
+                rua,
+                numero,
+                complemento,
+                bairro,
+                cidade,
+                UF,
+                cep,
               } = payload;
               if (!verificarInvalidos(validates)) {
                 return Alert.alert(
@@ -165,33 +168,33 @@ export const Update: React.FC<ICreateClientesProps> = ({
                   "Um ou mais dos campos ainda é ou são inválido(s)"
                 );
               }
-              const data_pessoa = await fetch(`${api_url}pessoa`, {
-                method: "POST",
+              const data_pessoa = await fetch(`${api_url}pessoa/${id_pessoa}`, {
+                method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ nome: nome_completo }),
+                body: JSON.stringify({ id: id_pessoa, nome }),
               });
 
               if (!data_pessoa.ok) {
                 return Alert.alert("Erro", "Não foi possivel criar o cliente");
               }
+
               const pessoa = await data_pessoa.json();
 
-
-              
-
               const data_pessoa_fisica = await fetch(
-                `${api_url}pessoa-fisica`,
+                `${api_url}pessoa-fisica/${id_pessoa_fisica}`,
                 {
                   method: "POST",
                   headers: {
                     "Content-Type": "application/json",
                   },
                   body: JSON.stringify({
+                    id: id_pessoa_fisica,
                     cpf,
                     data_de_nascimento,
                     id_pessoa: pessoa.id,
+                    id_endereco: id_endereco,
                   }),
                 }
               );
@@ -200,12 +203,35 @@ export const Update: React.FC<ICreateClientesProps> = ({
                 return Alert.alert("Erro", "Não foi possivel criar o cliente");
               }
 
-              const data_cliente = await fetch(`${api_url}cliente`, {
-                method: "POST",
+              const data_endereco = await fetch(`${api_url}endereco/${id_endereco}`, {
+                method: "PATCH",
                 headers: {
                   "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
+                  id: id_endereco,
+                  rua,
+                  numero,
+                  complemento,
+                  bairro,
+                  cidade,
+                  UF,
+                  cep,
+                })
+              })
+
+              if(!data_endereco.ok){
+                return Alert.alert("Erro", "Não foi possivel criar o cliente");
+              }
+
+              
+              const data_cliente = await fetch(`${api_url}cliente/${id}`, {
+                method: "PATCH",
+                headers: {
+                  "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                  id,
                   limite,
                   id_pessoa: pessoa.id,
                 }),
@@ -250,9 +276,10 @@ export const Update: React.FC<ICreateClientesProps> = ({
                   <InputField
                     type="text"
                     placeholder="Nome completo"
-                    onChangeText={handleChange("nome_completo")}
+                    value={values.nome}
+                    onChangeText={handleChange("nome")}
                     onBlur={() => {
-                      if (!values.nome_completo) {
+                      if (!values.nome) {
                         return setValidates({
                           ...validates,
                           nome_completo: {
@@ -394,9 +421,7 @@ export const Update: React.FC<ICreateClientesProps> = ({
                   </FormControlErrorText>
                 </FormControlError>
               </FormControl>
-              {values.enderecos.map((endereco) => (
-                <>
-                  {/* CEP */}
+              
                   <FormControl
                     isInvalid={validates.cep.isInvalid}
                     size={"md"}
@@ -552,8 +577,8 @@ export const Update: React.FC<ICreateClientesProps> = ({
                         editable={!validates.logradouro.isDisabled}
                         type="text"
                         placeholder="Avenida Joaquim Pompeu de Toledo"
-                        value={values.logradouro}
-                        onChangeText={handleChange("logradouro")}
+                        value={values.rua}
+                        onChangeText={handleChange("rua")}
                       />
                     </Input>
 
@@ -745,8 +770,6 @@ export const Update: React.FC<ICreateClientesProps> = ({
                       </FormControlErrorText>
                     </FormControlError>
                   </FormControl>
-                </>
-              ))}
 
               <FormControl
                 isInvalid={validates.limite.isInvalid}
